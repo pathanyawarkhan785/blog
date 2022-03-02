@@ -1,18 +1,19 @@
-const {
-  findMobileno,
-  findEmail,
-  findbyId,
-  findOwner,
-  inviteUser,
-  contentData,
-  findInvUsers,
-  addAccess,
-} = require("../../db/query");
+// const {
+//   findMobileno,
+//   findEmail,
+//   findbyId,
+//   findOwner,
+//   inviteUser,
+//   contentData,
+//   findInvUsers,
+//   addAccess,
+// } = require("../../db/query");
 const query = require("../../db/query");
-const jwt = require("jsonwebtoken");
 
 const registerVal = async (ctx, next) => {
   try {
+    // console.log("registerVal");
+
     let { email, password, firstName, lastName, mobileno } = ctx.request.body;
     let data = {};
     let regexEmail = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
@@ -30,7 +31,7 @@ const registerVal = async (ctx, next) => {
       return;
     } else {
       email = email.trim();
-      const findemail = await findEmail(email);
+      const findemail = await query.findEmail(email);
       if (findemail) {
         ctx.status = 400;
         ctx.body = { msg: "email must be unique." };
@@ -56,7 +57,7 @@ const registerVal = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = { msg: "password is compulsory,not null and in string." };
         return;
-      } else if (password.trim().length < 6) {
+      } else if (password.trim().length < 5) {
         ctx.status = 400;
         ctx.body = { msg: "password length must be atleast 5." };
         return;
@@ -91,7 +92,7 @@ const registerVal = async (ctx, next) => {
         ctx.body = { msg: "enter mobile number in correct format." };
         return;
       } else {
-        const findMobile = await findMobileno(mobileno.trim());
+        const findMobile = await query.findMobileno(mobileno.trim());
         if (findMobile) {
           ctx.status = 400;
           ctx.body = { msg: "mobileno must be unique." };
@@ -139,7 +140,7 @@ const loginVal = async (ctx, next) => {
         });
       }
     } else if (mobileno) {
-      const mobileData = await findMobileno(mobileno);
+      const mobileData = await query.findMobileno(mobileno);
       if (mobileData) {
         if (mobileData.password !== password) {
           ctx.status = 401;

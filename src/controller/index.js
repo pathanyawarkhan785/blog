@@ -28,6 +28,7 @@ const {
   findBlogById,
   findBlogByPageId,
 } = require("../../db/query/index");
+const query = require("../../db/query/index");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const { Db } = require("mongodb");
@@ -42,7 +43,7 @@ const registerRoute = async (ctx) => {
     updatedon: date,
     owner: true,
   };
-  const getData = await registerData(ctx.state.shared);
+  const getData = await query.registerData(ctx.state.shared);
   let message = "data not found";
   if (getData) {
     message = jwt.sign(
@@ -53,6 +54,7 @@ const registerRoute = async (ctx) => {
       }
     );
   }
+  ctx.status = 201;
   ctx.body = { msg: "registered successfully", token: message };
 };
 
