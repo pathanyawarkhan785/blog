@@ -112,26 +112,20 @@ const registerVal = async (ctx, next) => {
 
 const loginVal = async (ctx, next) => {
   try {
-    console.log("test1");
     const { email, password, mobileno } = ctx.request.body;
     if (!((email && email.trim()) || (mobileno && mobileno.trim()))) {
-      console.log("test2");
       ctx.status = 404;
       ctx.body = { msg: "user not found." };
       return;
       // ctx.throw(404, "user not found");
     }
-    console.log("test3");
 
     if (!email && !mobileno) {
       ctx.status = 404;
       ctx.body = { msg: "no owner found with this email or mobileno." };
       return;
     } else if (email) {
-      console.log("test4");
       const emailData = await query.findEmail(email);
-      console.log("test5");
-      console.log(emailData);
       if (emailData) {
         if (emailData.password !== password) {
           ctx.status = 401;

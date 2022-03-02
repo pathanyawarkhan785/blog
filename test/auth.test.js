@@ -1,7 +1,6 @@
 const supertest = require("supertest");
-let query = require("../db/query/index");
+const query = require("../db/query/index");
 const router = require("../index");
-// const mock = jest.fn();
 
 const request = supertest.agent(router.callback());
 
