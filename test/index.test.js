@@ -4,7 +4,11 @@ const router = require("../index");
 const request = supertest.agent(router.callback());
 
 describe("registeration", () => {
-  test("register null", async () => {
+  // beforeEach(() => {
+  //   console.log(1 + 1);
+  // });
+
+  test("if register details null.", async () => {
     const emailData = await request.post("/register").send();
     expect(emailData.body).toEqual({
       msg: "email is compulsory,string & not null.",
@@ -12,20 +16,43 @@ describe("registeration", () => {
     expect(emailData.status).toEqual(400);
   });
 
+  // afterEach(() => {
+  //   console.log(2 + 2);
+  // });
+
   test("throw error if email in database.", async () => {
+    query.findEmail = jest.fn(() => ({
+      email: "ywr@gmail.com",
+    }));
+
+    const emailData = await request.post("/register").send({
+      email: "ywr@gmail.com",
+      firstName: "rajdeepsinh",
+      password: "rd123",
+    });
+
+    expect(query.findEmail).toBeCalledTimes(1);
+    expect(emailData.status).toEqual(400);
+    expect(emailData.body).toEqual({ msg: "email must be unique." });
+  });
+
+  test("correct registration details.", async () => {
     query.findEmail = jest.fn(() => ({
       email: "rajdeep@gmail.com",
     }));
 
-    const emailData = await request.post("/register").send({
+    query.registerData = jest.fn(() => ({}));
+
+    const registerDetails = await request.post("/register").send({
       email: "rajdeep@gmail.com",
       firstName: "rajdeepsinh",
       password: "rd123",
-      mobileno: "9876543210",
+      mobileno: "8487864415",
     });
+
     expect(query.findEmail).toBeCalledTimes(1);
-    expect(emailData.status).toEqual(400);
-    expect(emailData.body).toEqual({ msg: "email must be unique." });
+    // expect(registerDetails.status).toEqual(201);
+    expect(registerDetails.body).toEqual(1);
   });
 });
 
@@ -39,11 +66,7 @@ describe("check login", () => {
   test("valid login credentials", async () => {
     query.findEmail = jest.fn(() => ({
       email: "ywr@gmail.com",
-      firstName: "yawar",
       password: "ywr123",
-      lastName: "pathan",
-      mobileno: "8487864415",
-      owner: true,
     }));
 
     const result = await request
@@ -51,6 +74,7 @@ describe("check login", () => {
       .send({ email: "ywr@gmail.com", password: "ywr123" });
 
     expect(query.findEmail).toBeCalledTimes(1);
-    expect(result.status).toBe(200);
+    // expect(result.body).toBe(1);
+    expect(result.status).toEqual(200);
   });
 });
