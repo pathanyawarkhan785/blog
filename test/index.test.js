@@ -198,4 +198,119 @@ describe("registeration", () => {
     });
     expect(registerData.status).toEqual(400);
   });
+
+  test("if all the details fill correct.", async () => {
+    query.findEmail = jest.fn();
+    query.registerData = jest.fn();
+
+    const registerDetails = await request.post("/register").send({
+      email: "rajdeep@gmail.com",
+      firstName: "rajdeep",
+      password: "rd123",
+    });
+
+    expect(registerDetails.status).toEqual(201);
+    expect(query.findEmail).toBeCalledTimes(1);
+    expect(query.registerData).toBeCalledTimes(1);
+  });
+});
+
+describe("login ", () => {
+  test("if login details null.", async () => {
+    const loginData = await request.post("/login").send();
+
+    expect(loginData.body).toEqual({ msg: "user not found." });
+    expect(loginData.status).toEqual(404);
+  });
+
+  test("if write only correct email in body.", async () => {
+    query.findEmail = jest.fn(() => ({
+      _id: "7df93619-42bd-4aed-9244-41245e0b3b4b",
+      email: "ywr@gmail.com",
+      firstName: "yawar",
+      password: "ywr123",
+      lastName: "pathan",
+      mobileno: "8487864415",
+      createdon: "2022-03-01T07:31:53.836+00:00",
+      updatedon: "2022-03-01T08:02:10.189+00:00",
+      owner: true,
+    }));
+
+    const loginData = await request.post("/login").send({
+      email: "ywr@gmail.com",
+    });
+
+    expect(loginData.body).toEqual({
+      msg: "password not matching.",
+    });
+    expect(loginData.status).toEqual(401);
+    expect(query.findEmail).toBeCalledTimes(1);
+  });
+
+  test("if write only password in body.", async () => {
+    const loginData = await request.post("/login").send({
+      password: "ywr",
+    });
+
+    expect(loginData.body).toEqual({
+      msg: "user not found.",
+    });
+    expect(loginData.status).toEqual(404);
+  });
+
+  test("if write incorrect crendential in body.", async () => {
+    query.findEmail = jest.fn(() => ({
+      _id: "7df93619-42bd-4aed-9244-41245e0b3b4b",
+      email: "ywr@gmail.com",
+      firstName: "yawar",
+      password: "ywr123",
+      lastName: "pathan",
+      mobileno: "8487864415",
+      createdon: "2022-03-01T07:31:53.836+00:00",
+      updatedon: "2022-03-01T08:02:10.189+00:00",
+      owner: true,
+    }));
+
+    const loginData = await request.post("/login").send({
+      email: "ywr@gmail.com",
+      password: "ywr",
+    });
+
+    expect(loginData.body).toEqual({
+      msg: "password not matching.",
+    });
+    expect(loginData.status).toEqual(401);
+    expect(query.findEmail).toBeCalledTimes(1);
+  });
+
+  test("if write only wrong email in body.", async () => {
+    query.findEmail = jest.fn();
+
+    const loginData = await request
+      .post("/login")
+      .send({ email: "darshit@gmail.com" });
+
+    expect(loginData.body).toEqual({
+      msg: "no record found with this email : darshit@gmail.com",
+    });
+  });
+
+  test("if write correct credentials in body.", async () => {
+    query.findEmail = jest.fn(() => ({
+      _id: "6eab0f5b-2eb5-4259-8d10-9a96924dac40",
+      email: "viraj@gmail.com",
+      firstName: "viraj",
+      password: "viru123",
+      lastName: "patel",
+      mobileno: "8487864410",
+    }));
+
+    const emailData = await request.post("/login").send({
+      email: "viraj@gmail.com",
+      password: "viru123",
+    });
+
+    expect(emailData.status).toEqual(200);
+    expect(query.findEmail).toBeCalledTimes(1);
+  });
 });
