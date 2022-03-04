@@ -3,7 +3,7 @@ const query = require("../db/query/index");
 const router = require("../index");
 const request = supertest.agent(router.callback());
 
-describe("registeration", () => {
+describe.skip("registeration", () => {
   test("if registeration details null.", async () => {
     const registerData = await request.post("/register").send();
 
@@ -215,7 +215,7 @@ describe("registeration", () => {
   });
 });
 
-describe("login ", () => {
+describe.skip("login ", () => {
   test("if login details null.", async () => {
     const loginData = await request.post("/login").send();
 

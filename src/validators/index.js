@@ -1,13 +1,13 @@
-// const {
-//   findMobileno,
-//   findEmail,
-//   findbyId,
-//   findOwner,
-//   inviteUser,
-//   contentData,
-//   findInvUsers,
-//   addAccess,
-// } = require("../../db/query");
+const {
+  findMobileno,
+  findEmail,
+  findbyId,
+  findOwner,
+  inviteUser,
+  contentData,
+  findInvUsers,
+  addAccess,
+} = require("../../db/query");
 const query = require("../../db/query");
 
 const registerVal = async (ctx, next) => {
@@ -187,7 +187,7 @@ const updateUserVal = async (ctx, next) => {
 
   if (typeof email !== "string") {
     ctx.status = 400;
-    ctx.body = { msg: "email is in string." };
+    ctx.body = { msg: "email must be in string." };
     return;
   } else if (regexEmail.test(email.trim()) === false) {
     ctx.status = 400;
