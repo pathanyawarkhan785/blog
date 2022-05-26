@@ -17,7 +17,7 @@ const auth = async (ctx, next) => {
     await next();
   } catch (e) {
     ctx.body = e;
-    console.log(e);
+    // console.log(e);
   }
 };
 

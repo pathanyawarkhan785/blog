@@ -183,7 +183,7 @@ const isUpdatepage = async (ctx, next) => {
   const { findemail } = ctx.state.shared;
 
   if (findid) {
-    if (findemail._id !== findid.pageaccess[0].userid) {
+    if (findid && findemail._id !== findid.pageaccess[0].userid) {
       ctx.status = 401;
       ctx.body = {
         msg: "page can update only by owner.",

@@ -194,7 +194,7 @@ const updateUserVal = async (ctx, next) => {
     ctx.body = { msg: "enter email in correct format." };
     return;
   } else {
-    const findemail = await findEmail(email);
+    const findemail = await query.findEmail(email);
     if (oldEmail === email) {
       // ctx.status = 400;
       // ctx.body = { msg: "you entered old email." };
